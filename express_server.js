@@ -54,12 +54,17 @@ app.post("/urls", (req, res) => {
   urlDatabase[newShortUrl] = "http://" + req.body["longURL"];
   const templateVars = { shortURL: newShortUrl, longURL: "http://" + req.body["longURL"]}
   const newLongURL = urlDatabase[newShortUrl]
-  res.redirect(newLongURL);
+  res.redirect(`/urls/${newShortUrl}`);
 })
 
 app.get("/u/:shortURL", (req, res) => {
-  // console.log(typeof req.params)
   res.redirect(urlDatabase[req.params.shortURL])
+});
+
+app.post("/urls/:shortURL/delete", (req, res) => {
+  const shortURL = req.params.shortURL
+  delete urlDatabase[shortURL];
+  res.redirect("/urls")
 });
 
 app.listen(PORT, () => {
