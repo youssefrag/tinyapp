@@ -68,7 +68,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 });
 
 app.post("/urls/:shortURL", (req, res) => {
-  const longURL = req.body.longURL
+  const longURL = `http://${req.body.longURL}`
   const templateVars = { shortURL: req.params.shortURL, longURL: longURL}
   const shortURL = req.params.shortURL
   urlDatabase[shortURL] = longURL
