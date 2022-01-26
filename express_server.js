@@ -109,11 +109,6 @@ app.post("/urls/:shortURL", (req, res) => {
   res.redirect("/urls")
 })
 
-app.post("/login", (req, res) => {
-  // res.cookie('username', req.body.username)
-  res.redirect("/urls")
-})
-
 app.post("/logout", (req, res) => {
   res.clearCookie('user_id')
   res.redirect("/urls")
@@ -126,7 +121,6 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
   // console.log(req.body)
   const userRandomId = generateRandomString()
-  res.cookie('user_id', userRandomId)
   const user_email = req.body.email
   const user_password = req.body.password
   if (!(user_email) || !(user_password)) {
@@ -139,6 +133,31 @@ app.post("/register", (req, res) => {
   users[userRandomId].id = userRandomId
   users[userRandomId].email = user_email
   users[userRandomId].password = user_password
+  res.cookie('user_id', userRandomId)
+  res.redirect("/urls")
+})
+
+app.get("/login", (req, res) => {
+  res.render("login")
+})
+
+app.post("/login", (req,res) => {
+  const user_email = req.body.email
+  const user_password = req.body.password
+  if (!(emailExists(user_email) === true)) {
+    return res.status(403).send("email has not been registered")
+  }
+  let matchingId
+  for (id in users) {
+    if (users[id].email === user_email) {
+      matchingId = id
+    }
+  }
+  let correctPassword = users[matchingId].password
+  if (!(user_password === correctPassword)) {
+    return res.status(403).send("The password entered is incorrect")
+  }
+  res.cookie('user_id', matchingId)
   res.redirect("/urls")
 })
 
