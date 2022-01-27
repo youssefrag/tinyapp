@@ -72,6 +72,10 @@ app.get("/urls/:shortURL", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
+  console.log(req.cookies.user_id)
+  if(!(req.cookies.user_id)) {
+    res.redirect("/login")
+  }
   const newShortUrl = generateRandomString()
   urlDatabase[newShortUrl] = "http://" + req.body["longURL"];
   const templateVars = { 
