@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const PORT = 8000; // default port 8080
+const PORT = 9876; // default port 8080
 
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
@@ -21,6 +21,18 @@ function generateRandomString() {
 }
 
 const urlDatabase = {
+    b6UTxQ: {
+        longURL: "https://www.tsn.ca",
+        userID: "aJ48lW"
+    },
+    i3BoGr: {
+        longURL: "https://www.google.ca",
+        userID: "aJ48lW"
+    },
+    q038dN: {
+        longURL: "http://www.facebook.com",
+        userID: "17ecfc",
+    }
 };
 
 const users = {}
@@ -31,6 +43,18 @@ const emailExists = function(email) {
      return true
    }
   }
+}
+
+const urlsForUser = function(id) {
+  let id_dataBase = {}
+  for (shortURL in urlDatabase) {
+    if (urlDatabase[shortURL].userID === id) {
+      id_dataBase[shortURL] = {}
+      id_dataBase[shortURL].userID = urlDatabase[shortURL].userID
+      id_dataBase[shortURL].longURL = urlDatabase[shortURL].longURL
+    }
+  }
+  return id_dataBase
 }
 
 app.get("/", (req, res) => {
@@ -46,10 +70,13 @@ app.get("/hello", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
+  const userID = req.cookies["user_id"]
+  const userURLS = urlsForUser(userID, urlDatabase)
   const templateVars = { 
     urls: urlDatabase,
     user: users[req.cookies["user_id"]],
-    };
+    urls_id : urlsForUser(req.cookies["user_id"])
+  };
   res.render("urls_index", templateVars);
 });
 
@@ -96,8 +123,13 @@ app.get("/u/:shortURL", (req, res) => {
 
 app.post("/urls/:shortURL/delete", (req, res) => {
   const shortURL = req.params.shortURL
-  delete urlDatabase[shortURL];
-  res.redirect("/urls")
+  const currentUser = req.cookies.user_id
+  if (currentUser && req.cookies.user_id === urlDatabase[shortURL].userID) {
+    res.redirect("/urls")
+  } else {
+    res.send("This URL can only be deleted by the user who added it")
+  }
+  // JPZPdl
 });
 
 app.post("/urls/:shortURL", (req, res) => {
@@ -108,8 +140,13 @@ app.post("/urls/:shortURL", (req, res) => {
     user: users[req.cookies["user_id"]],
   }
   const shortURL = req.params.shortURL
-  urlDatabase[shortURL].longURL = longURL
-  res.redirect("/urls")
+  const currentUser = req.cookies.user_id
+  if (currentUser === urlDatabase[shortURL].userID) {
+    urlDatabase[shortURL].longURL = longURL
+    res.redirect("/urls")
+  } else {
+    res.send("This URL can only be edited by the user who added it")
+  }
 })
 
 app.post("/logout", (req, res) => {
@@ -172,3 +209,5 @@ app.post("/login", (req,res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
+
+urlsForUser("aJ48lW")
