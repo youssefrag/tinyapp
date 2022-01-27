@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const PORT = 8080; // default port 8080
+const PORT = 8000; // default port 8080
 
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
@@ -44,18 +44,14 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/hello", (req, res) => {
-  const templateVars = { 
-    greeting: 'Hello World!',
-    user: users[req.cookies["user_id"]],
-  };
-  res.render("hello_world", templateVars);
+  res.render("hello_world");
 });
 
 app.get("/urls", (req, res) => {
   const templateVars = { 
     urls: urlDatabase,
     user: users[req.cookies["user_id"]],
-   };
+    };
   res.render("urls_index", templateVars);
 });
 
@@ -115,11 +111,13 @@ app.post("/logout", (req, res) => {
 })
 
 app.get("/register", (req, res) => {
-  res.render("register")
+  const templateVars = { 
+    user: users[req.cookies["user_id"]],
+  };
+  res.render("register", templateVars)
 })
 
 app.post("/register", (req, res) => {
-  // console.log(req.body)
   const userRandomId = generateRandomString()
   const user_email = req.body.email
   const user_password = req.body.password
@@ -138,7 +136,10 @@ app.post("/register", (req, res) => {
 })
 
 app.get("/login", (req, res) => {
-  res.render("login")
+  const templateVars = { 
+    user: users[req.cookies["user_id"]],
+  };
+  res.render("login", templateVars)
 })
 
 app.post("/login", (req,res) => {

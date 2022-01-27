@@ -13,15 +13,15 @@
     <% if(user){ %>
       <form class="form-inline" action="/logout" method="POST">
         <div style="color: white; margin-right: 20px">Logged in as: <%= user.email %></div>
-        <button type="logout" class="btn logoutBtn" style="background-color: blue; color: white">Logout</button>
+        <button type="submit" class="btn logoutBtn" style="background-color: blue; color: white">Logout</button>
       </form>
     <% } else{ %>   
       <form class="form-inline" action="/login" method="GET">
         <button type="submit" class="btn submitBtn" style="background-color: blue; color: white">Login</button>
       </form>
       <form class="from-inline" action="/register" method="GET">
-        <button type="register" class="btn registerBtn" style="background-color: blue; color: white; margin-left: 10px">Register</button>
-      <form>
+        <button type="submit" href="/register" class="btn registerBtn" style="background-color: blue; color: white; margin-left: 10px">Register</button>
+      </form>
     <% } %>
   </nav>
 </header>
