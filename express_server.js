@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const PORT = 1234;
+const PORT = 1233;
 const bcrypt = require('bcryptjs');
 const { getUserByEmail, emailExists } = require('./helpers.js');
 
