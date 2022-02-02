@@ -15,4 +15,4 @@ const emailExists = function(email, users) {
   return false;
 };
 
-module.exports = { getUserByEmail, emailExists };
+module.exports = { getUserByEmail, emailExists, };

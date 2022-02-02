@@ -76,6 +76,11 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
+  const user_id = req.session['user_id']
+  if(!user_id) {
+    res.redirect("/login")
+    return;
+  } 
   const templateVars = {
     user: users[req.session["user_id"]],
   };
@@ -83,7 +88,15 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
+  const user_id = req.session['user_id']
   const SHORTURL = req.params.shortURL;
+  if(!user_id) {
+    res.send("Please <a href=/login>login</a> first to see urls.")
+    return;
+  }
+  if (user_id !== urlDatabase[SHORTURL].userID) {
+    res.send("Only the person who added the URL can view it.");
+  }
   const LONGURL = urlDatabase[req.params.shortURL].longURL;
   const templateVars = {
     shortURL: SHORTURL,
@@ -118,10 +131,10 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   } else {
     res.send("This URL can only be deleted by the user who added it");
   }
-  // JPZPdl
 });
 
 app.post("/urls/:shortURL", (req, res) => {
+  
   const longURL = `http://${req.body.longURL}`;
   const shortURL = req.params.shortURL;
   const currentUser = req.session.user_id;
@@ -134,7 +147,7 @@ app.post("/urls/:shortURL", (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-  req.session['user_id'] = null;
+  req.session = null;
   res.redirect("/urls");
 });
 
@@ -177,7 +190,7 @@ app.post("/login", (req,res) => {
   if (!(emailExists(user_email, users) === true)) {
     return res.status(403).send("email has not been registered");
   }
-  let matchingId;
+  let matchingId = null;
   for (let id in users) {
     if (users[id].email === user_email) {
       matchingId = id;
