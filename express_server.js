@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const PORT = 9999;
 const bcrypt = require('bcryptjs');
-const { getUserByEmail, emailExists } = require('./helpers.js');
+const { emailExists } = require('./helpers.js');
 
 const cookieSession = require('cookie-session');
 app.use(cookieSession({

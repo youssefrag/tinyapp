@@ -1,11 +1,3 @@
-const getUserByEmail = function(email, users) {
-  for (let user in users) {
-    if (users[user].email === email) {
-      return user;
-    }
-  }
-};
-
 const emailExists = function(email, users) {
   for (let user in users) {
     if (users[user].email === email) {
@@ -15,4 +7,4 @@ const emailExists = function(email, users) {
   return false;
 };
 
-module.exports = { getUserByEmail, emailExists, };
+module.exports = {  emailExists, };
