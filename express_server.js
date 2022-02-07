@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const PORT = 1244;
+const PORT = 9999;
 const bcrypt = require('bcryptjs');
 const { getUserByEmail, emailExists } = require('./helpers.js');
 
@@ -55,7 +55,7 @@ const urlsForUser = function(id) {
 };
 
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  res.redirect("/login");
 });
 
 app.get("/urls.json", (req, res) => {
@@ -127,6 +127,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   const shortURL = req.params.shortURL;
   const currentUser = req.session.user_id;
   if (currentUser && req.session.user_id === urlDatabase[shortURL].userID) {
+    delete urlDatabase[shortURL];
     res.redirect("/urls");
   } else {
     res.send("This URL can only be deleted by the user who added it");
