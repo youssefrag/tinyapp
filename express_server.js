@@ -15,6 +15,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 app.set("view engine", "ejs");
 
+// Generates random string to use as short URL
 const generateRandomString = function() {
   let result = '';
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -66,6 +67,7 @@ app.get("/hello", (req, res) => {
   res.render("hello_world");
 });
 
+// Page displays saved URLs for a given loggen in user
 app.get("/urls", (req, res) => {
   const templateVars = {
     urls: urlDatabase,
@@ -75,6 +77,7 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
+// Create new URL
 app.get("/urls/new", (req, res) => {
   const user_id = req.session['user_id']
   if(!user_id) {
@@ -87,6 +90,7 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new", templateVars);
 });
 
+// Shows page for specific given URL
 app.get("/urls/:shortURL", (req, res) => {
   const user_id = req.session['user_id']
   const SHORTURL = req.params.shortURL;
@@ -159,6 +163,7 @@ app.get("/register", (req, res) => {
   res.render("register", templateVars);
 });
 
+// Main page for new user registration
 app.post("/register", (req, res) => {
   const userRandomId = generateRandomString();
   const user_email = req.body.email;
@@ -178,6 +183,7 @@ app.post("/register", (req, res) => {
   res.redirect("/urls");
 });
 
+// Gets main login page
 app.get("/login", (req, res) => {
   const templateVars = {
     user: users[req.session["user_id"]],
@@ -185,6 +191,7 @@ app.get("/login", (req, res) => {
   res.render("login", templateVars);
 });
 
+// Login page checks to see if user exists and matches passwords
 app.post("/login", (req,res) => {
   const user_email = req.body.email;
   const user_password = req.body.password;
